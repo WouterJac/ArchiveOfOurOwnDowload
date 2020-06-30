@@ -1,0 +1,52 @@
+package com.company;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+public class Main {
+
+    //Dit script neemt de "ALLES" mappen, en verandert iedere fanfic volgens de naamgeving Fandom_(crossoverfandom)_Auteur_Titel
+
+    public static void main(String[] args) {
+        File upper = new File("D:\\Documenten\\Ank Digitale Tekstanalyse TEST");
+        for (File fanfic : upper.listFiles()) {
+            String fullName = fanfic.getName();
+            if(fullName.contains("You_Light_The_Sky")){
+                fullName = fullName.replace("You_Light_The_Sky","YouLightTheSky");
+            }
+            String author = fullName.split("_")[0];
+            String fandom = fullName.split("_")[1];
+            if(fullName.split("_").length>3){
+                String crossfandom = fullName.split("_")[2];
+                String title = fullName.split("_")[3];
+
+                //File newName = new File(fanfic2.getParent(), author+"_"+fandom+"_"+fanfic.getName()+"_"+fanfic2.getName());
+                File newName = new File(fanfic.getParent(), fandom + "_"+ crossfandom + "_" + author + "_" + title);
+                try {
+                    Files.move(fanfic.toPath(), newName.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }else{
+                String title="";
+                try {
+                    title = fullName.split("_")[2];
+                }catch(ArrayIndexOutOfBoundsException e){
+                    e.printStackTrace();
+                    System.out.println(fullName);
+                }
+
+                //File newName = new File(fanfic2.getParent(), author+"_"+fandom+"_"+fanfic.getName()+"_"+fanfic2.getName());
+                File newName = new File(fanfic.getParent(), fandom + "_"+ author+"_"+title);
+                try {
+                    Files.move(fanfic.toPath(), newName.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+}

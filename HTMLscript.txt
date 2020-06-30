@@ -1,0 +1,105 @@
+package com.company;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Main {
+
+    //Dit script kan verwerkt HTML files, gedownload van arhive of our own, tot een bestand met pure tekst
+    //(met uitzondering van files met chapters, die worden handmatig verwerkt)
+
+    public static void main(String[] args) {
+        Scanner myScan = new Scanner(System.in);
+        print("Welcome!");
+        processData(myScan);
+    }
+
+    static public void print(String sent){
+        System.out.println(sent);
+    }
+
+    static void processData(Scanner myScan){
+
+        String fanfic = "";
+
+        final File folder = new File("D:\\Documenten\\Ank Digitale Tekstanalyse TEST\\TOCONVERT");
+
+        for (final File fileEntry : folder.listFiles()) {
+            boolean start=false;
+            fanfic = "";
+            String name = fileEntry.getName();
+            String title = name.replace(".html",".txt");
+            print("Started working on "+name);
+            try {
+                Scanner myReader = new Scanner(fileEntry);
+                while (myReader.hasNextLine()) {
+                    String line = myReader.nextLine();
+                    line = line.replaceAll("\t","");
+                    line = line.replaceAll("<i>","");
+                    line = line.replaceAll("</i>","");
+                    line = line.replaceAll("<br>","");
+                    line = line.replaceAll("</br>","");
+                    line = line.replaceAll("<b>","");
+                    line = line.replaceAll("</b>","");
+                    line = line.replaceAll("<br/>","");
+                    line = line.replaceAll("<ol>","");
+                    line = line.replaceAll("</ol>","");
+                    line = line.replaceAll("<li>","");
+                    line = line.replaceAll("</li>","");
+                    line = line.replaceAll("<strong>","");
+                    line = line.replaceAll("</strong>","");
+                    line = line.replaceAll("<em>","");
+                    line = line.replaceAll("</em>","");
+                    line = line.replaceAll("<hr/>","");
+                    line = line.replaceAll("<hr>","");
+                    line = line.replaceAll("</center>","");
+                    line = line.replaceAll("<center>","");
+                    line = line.replaceAll("</span>","");
+                    line = line.replaceAll("<span>","");
+                    line = line.replaceAll("</u>","");
+                    line = line.replaceAll("<u>","");
+                    line = line.replaceAll("</h1>","");
+                    line = line.replaceAll("</a>","");
+                    line = line.replaceAll("<a>","");
+                    line = line.replaceAll("<s>","");
+                    line = line.replaceAll("</s>","");
+                    if(start && line.contains("</div>")){
+                        start = false;
+                    }
+                    if(start &&  !line.toLowerCase().contains("<div") &&  !line.toLowerCase().contains("<img src") && !line.toLowerCase().contains("to be continued") && !line.toLowerCase().contains("chapter text") && !line.toLowerCase().contains("</div>")) {
+                        fanfic += line;
+                        fanfic += "\n";
+                    }
+                    if(line.contains("<div class=\"userstuff\">")){
+                        start = true;
+                    }
+
+                }
+                myReader.close();
+                process(fanfic, title);
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    static void process(String fanfic, String name){
+
+        fanfic = fanfic.replaceAll("<p>","");
+        fanfic = fanfic.replaceAll("</p>","\n\n");
+
+        //print(fanfic);
+        try {
+            FileWriter f2 = new FileWriter("D:\\Documenten\\Ank Digitale Tekstanalyse TEST\\CONVERTED\\" + name, false);
+            f2.write(fanfic);
+            f2.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

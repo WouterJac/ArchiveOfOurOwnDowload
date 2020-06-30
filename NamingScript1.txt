@@ -1,0 +1,45 @@
+package com.company;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
+public class Main {
+
+    //Dit script neemt de mappenstructuur, en verandert iedere fanfic volgens de naamgeving Fandom_(crossoverfandom)_Auteur_Titel
+
+    public static void main(String[] args) {
+        File upper = new File("D:\\Documenten\\Ank Digitale Tekstanalyse TEST");
+            for (File AuthorDirectory : upper.listFiles()) {
+                String author = AuthorDirectory.getName();
+                if (AuthorDirectory.isDirectory()) {
+                    for (File FandomDirectoy : AuthorDirectory.listFiles()) {
+                        String fandom = FandomDirectoy.getName();
+                        if (FandomDirectoy.isDirectory()) {
+                            for (File fanfic : FandomDirectoy.listFiles()) {
+                                if (fanfic.isDirectory()) {
+                                    for (File fanfic2 : fanfic.listFiles()) {
+                                        //File newName = new File(fanfic2.getParent(), author+"_"+fandom+"_"+fanfic.getName()+"_"+fanfic2.getName());
+                                        File newName = new File(fanfic2.getParent(), fandom + "_"+ fanfic.getName() + "_" + author + "_" + fanfic2.getName().split("_")[fanfic2.getName().split("_").length-1]);
+                                        try {
+                                            Files.move(fanfic2.toPath(), newName.toPath());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                } else {
+                                    //File newName = new File(fanfic.getParent(), author + "_" + fandom + "_" + fanfic.getName());
+                                    File newName = new File(fanfic.getParent(), fandom + "_" + author + "_" + fanfic.getName().split("_")[fanfic.getName().split("_").length-1]);
+                                    try {
+                                        Files.move(fanfic.toPath(), newName.toPath());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
